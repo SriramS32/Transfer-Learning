@@ -355,9 +355,10 @@ def test_mlp(learning_rate=0.1, L1_reg=0.00, L2_reg=0.0001, n_epochs=20,
     inputs=train_set_x.get_value(borrow=True) #inputs
 
     """
+    print '...printing input images'
     if(not transfer):
         #print out the input images
-        fileNameTemplate = '/Users/Sriram/Desktop/Python/figures/input'
+        fileNameTemplate = 'inputImage'
         fig = plt.figure()
         ax = fig.add_subplot(1,1,1)
         ax.set_aspect('equal')
@@ -371,7 +372,7 @@ def test_mlp(learning_rate=0.1, L1_reg=0.00, L2_reg=0.0001, n_epochs=20,
         fig = plt.figure() #
         ax = fig.add_subplot(1,1,1)
         ax.set_aspect('equal')
-        fileNameTemplate = '/Users/Sriram/Desktop/Python/figures/figureStart'
+        fileNameTemplate = 'wMapInit'
         for i in range(0,n_hidden):
             a = classifier.hiddenLayer.W.get_value()[:,i]
             a = reshape(a,(28,28))
@@ -492,10 +493,11 @@ def test_mlp(learning_rate=0.1, L1_reg=0.00, L2_reg=0.0001, n_epochs=20,
         
         #Save a picture of a weight map of the first hidden node after training
         """
+        print '...printing weight maps of H1 (hidden nodes in layer 1) after training'
         fig = plt.figure()
         ax = fig.add_subplot(1,1,1)
         ax.set_aspect('equal')
-        fileNameTemplate = '/Users/Sriram/Desktop/Python/figures/figureEnd'
+        fileNameTemplate = 'wMapTrained'
         for i in range(0,n_hidden):
             a = classifier.hiddenLayer.W.get_value()[:,i]
             a = reshape(a,(28,28))
@@ -512,7 +514,7 @@ def test_mlp(learning_rate=0.1, L1_reg=0.00, L2_reg=0.0001, n_epochs=20,
         hidden1W = classifier.hiddenLayer.W.get_value()
         #just being safe for now with all the copies, can change this later
         aveList = []
-        print 'starting'
+        print 'starting transfer calculations'
         for i in range(0,n_hidden):
             x = 0
             for j in range(0,inputSize):
@@ -551,9 +553,8 @@ def test_mlp(learning_rate=0.1, L1_reg=0.00, L2_reg=0.0001, n_epochs=20,
             #print 'with a value of'
             #print aveList[i]
             #print ''
-        print 'A total number of '
-        print count
-        print ' passed the threshold'
+        print 'A total number of ' + str(count) + ' H1 nodes passed the threshold'
+        
         
 
 
@@ -565,7 +566,7 @@ def test_mlp(learning_rate=0.1, L1_reg=0.00, L2_reg=0.0001, n_epochs=20,
         #now for the next hidden layer :)
         hidden2W = classifier.hiddenLayer.W.get_value()
         aveList = []
-        print 'starting next one'
+        print 'starting next hidden layer calculation'
         for i in range(0,n_hidden):
             x = 0
             for j in range(0,n_hidden):
@@ -585,9 +586,7 @@ def test_mlp(learning_rate=0.1, L1_reg=0.00, L2_reg=0.0001, n_epochs=20,
                             ).flatten()
             else:
                 count += 1
-        print 'A total number of '
-        print count
-        print ' hidden nodes in layer 2 passed the threshold'
+        print 'A total number of ' str(count) + ' H2 nodes passed the threshold'
 
 
 
@@ -601,7 +600,8 @@ def test_mlp(learning_rate=0.1, L1_reg=0.00, L2_reg=0.0001, n_epochs=20,
 
         """
         #print the weight maps (some will be randomized to pass on the next iteration of training, others will be preserved)
-        fileNameTemplate = '/Users/Sriram/Desktop/Python/figures/figureRelevant'
+        print '...printing H1 weight maps after transfering learning'
+        fileNameTemplate = 'wMapRelevant'
         for i in range(0,n_hidden):
             a = hidden1W[:,i]
             a = reshape(a,(28,28))
@@ -621,7 +621,20 @@ def test_mlp(learning_rate=0.1, L1_reg=0.00, L2_reg=0.0001, n_epochs=20,
         #tensor2 = None
 
         test_mlp()
-
+    else:
+        print 'Thank you for running this transfer program'
+        print 'Below are descriptions of files that have been created'
+        print 'out.txt         - validation error while training'
+        print 'outTransfer.txt - validation error while traning after transfer learning'
+        """
+        print ''
+        print 'wMapInit group    -  weight maps after initialization'
+        print 'wMapTrained group -  weight maps after training'
+        print 'wMapTransfer group    -  weight maps after transfering'
+        print '     relevant weight maps to activated nodes are identical to wMapTrained'
+        print '     non relevant weight maps are re-initialized'
+        """
+     
 if __name__ == '__main__':
     global transfer
     transfer = False
