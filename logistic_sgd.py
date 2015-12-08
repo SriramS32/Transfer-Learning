@@ -1,5 +1,9 @@
 """
 
+Code from http://deeplearning.net/tutorial/logreg.html
+No edits done to this code - Sriram Somasundaram
+Will need to edit later for taking in other databases.
+
 """
 __docformat__ = 'restructedtext en'
 
