@@ -4,10 +4,12 @@ Hi!
 
 **Background:** I just started this project two months ago. Based on hearing Deepmind's Demis Hassabis talk about the ability to transfer learning, I wanted to create infrastructure for a network to transfer learning between tasks. Biologically, I thought that transfer learning involves the activation of similar neurons and pathways (or hidden nodes, computationally speaking).
 
-**Library** contains
+**Repository** contains
 - mlpV3Transfer.py is main MLP code with transfer learning
 - mlpV3TransferPictures.py is MLP code that prints out weight maps
 - logistic_sgd.py for use by main MLP code & connects last hidden layer to output layer
+
+Libraries needed: **Theano**, **matplotlib**
 
 # Code Sketch
 The starter MLP python code is from http://deeplearning.net/tutorial/mlp.html.
@@ -30,5 +32,4 @@ python mlpV3TransferPictures.py
 Currently, the code uses the same database for the initial training and transfer, but in the future, I will format a database of maybe alphabets and see the effects.
 An algorithm can be developed to designate an appropriate threshold based on the transfer of learning between datasets. The learning rates of weights could be modified rather than preserving the weights and then using a general learning rate. Weights in deeper hidden layers that connect to non-activated H1 nodes could be re-initialized as well.
 
-Libraries needed: Theano, matplotlib
 Sriram Somasundaram
