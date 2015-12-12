@@ -11,7 +11,7 @@ Hi!
 
 Libraries needed: **Theano**, **matplotlib**
 
-# Code Sketch
+#Code Sketch
 The starter MLP python code is from http://deeplearning.net/tutorial/mlp.html.
 The transfer learning code first trains on the MNIST database (http://www.iro.umontreal.ca/~lisa/deep/data/mnist/mnist.pkl.gz).
 - A desired set of images from the new database is tested using the trained weight set for activations of hidden nodes
