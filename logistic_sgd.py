@@ -183,6 +183,13 @@ def load_data(dataset):
     f = gzip.open(dataset, 'rb')
     train_set, valid_set, test_set = cPickle.load(f)
     f.close()
+
+    #foo=str.split("_",8)
+    #foo[8]
+    #
+    #
+    #FOR CREATING TUPLE OF NEW DATASET
+    
     #train_set, valid_set, test_set format: tuple(input, target)
     #input is an numpy.ndarray of 2 dimensions (a matrix)
     #witch row's correspond to an example. target is a
