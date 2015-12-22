@@ -32,4 +32,7 @@ python mlpV3TransferPictures.py
 Currently, the code uses the same database for the initial training and transfer, but in the future, I will format a database of maybe alphabets and see the effects.
 An algorithm can be developed to designate an appropriate threshold based on the transfer of learning between datasets. The learning rates of weights could be modified rather than preserving the weights and then using a general learning rate. Weights in deeper hidden layers that connect to non-activated H1 nodes could be re-initialized as well.
 
+#License
+BSD
+
 Sriram Somasundaram
