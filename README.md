@@ -27,6 +27,7 @@ python mlpV3Transfer.py
 //OR
 python mlpV3TransferPictures.py
 ```
+For more information, see website.
 
 #Future Plans
 Currently, the code uses the same database for the initial training and transfer, but in the future, I will format a database of maybe alphabets and see the effects. (Note edit the logistic_sgd.py file which takes in the dataset)
