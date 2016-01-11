@@ -622,6 +622,25 @@ def test_mlp(learning_rate=0.1, L1_reg=0.00, L2_reg=0.0001, n_epochs=20,
         print 'wMapTransfer group    -  weight maps after transfering'
         print '     relevant weight maps to activated nodes are identical to wMapTrained'
         print '     non relevant weight maps are re-initialized'
+
+        """
+        Optimize this
+        I need to save the weights by printing the tensors to a file.
+        Will need to add functionality of starting a network from weights from a file as well.
+        classifier.hiddenLayer.W.get_value()[:,i]
+        two for loop, iterate through rows and columns of 2D tensor for weights.
+        Will need to apply for both tensors (or n tensors depending on hidden layers)
+        for(int i =0 ;i < #hiddenlayers; i++):
+        {
+            weight = tensor(i).get_value()
+            for i in row:
+                for j in col:
+                    print weight[i:j] #something like this, to pick up the weights think of similar way, also have to optimize this part
+        }
+        because the two tensors are named differently (not as part of a larger structure), will have to use two sets of two for loops
+
+        tensor.get_value()[]
+        """
         
 
 if __name__ == '__main__':
