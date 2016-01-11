@@ -139,7 +139,7 @@ class MLP(object):
         # LogisticRegression layer; the activation function can be replaced by
         # sigmoid or any other nonlinear function
 
-        #Add ons: Can create any number of layers here, just link the inputs and outputs
+        #Add ons: Can create any number of layers here, just link the inputs and outputs, and consider regularization
         if (not transfer):
             self.hiddenLayer = HiddenLayer(
                 rng=rng,
@@ -217,8 +217,6 @@ class MLP(object):
         self.input = input
 
 
-#mlp.LogisticRegression.W
-#mlp.HiddenLayer.W
 def test_mlp(learning_rate=0.1, L1_reg=0.00, L2_reg=0.0001, n_epochs=20,
              dataset='mnist.pkl.gz', batch_size=20, n_hidden=100):
 #epoch is originally 500, hidden is 500, learning rate is 0.01
@@ -250,6 +248,7 @@ def test_mlp(learning_rate=0.1, L1_reg=0.00, L2_reg=0.0001, n_epochs=20,
 
    """
 
+    #these are of data type tuple
     datasets = load_data(dataset)
 
     train_set_x, train_set_y = datasets[0]
@@ -580,7 +579,7 @@ def test_mlp(learning_rate=0.1, L1_reg=0.00, L2_reg=0.0001, n_epochs=20,
                             ).flatten()
             else:
                 count += 1
-        print 'A total number of ' str(count) + ' H2 nodes passed the threshold'
+        print 'A total number of ' + str(count) + ' H2 nodes passed the threshold'
 
 
 
@@ -616,7 +615,7 @@ def test_mlp(learning_rate=0.1, L1_reg=0.00, L2_reg=0.0001, n_epochs=20,
         print 'Thank you for running this transfer program'
         print 'Below are descriptions of files that have been created'
         print 'out.txt         - validation error while training'
-        print 'outTransfer.txt - validation error while traning after transfer learning'
+        print 'outTransfer.txt - validation error while training after transfer learning'
         print ''
         print 'wMapInit group    -  weight maps after initialization'
         print 'wMapTrained group -  weight maps after training'
