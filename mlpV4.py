@@ -22,6 +22,8 @@ import matplotlib.pylab as plt
 import theano
 import theano.tensor as T
 
+from getHSF import getHSF
+
 
 from logistic_sgd import LogisticRegression, load_data
 
@@ -220,7 +222,7 @@ class MLP(object):
 
 #mlp.LogisticRegression.W
 #mlp.HiddenLayer.W
-def test_mlp(learning_rate=0.1, L1_reg=0.00, L2_reg=0.0001, n_epochs=20,
+def test_mlp(learning_rate=.1, L1_reg=0.00, L2_reg=0.0001, n_epochs=20,
              dataset='mnist.pkl.gz', batch_size=20, n_hidden=100):
 #epoch is originally 500, hidden is 500, learning rate is 0.01
     """
@@ -253,19 +255,11 @@ def test_mlp(learning_rate=0.1, L1_reg=0.00, L2_reg=0.0001, n_epochs=20,
    #Rahul -  a transfer here will run the code for the second data set first. Not transfer, will run the code in the correct order
     if(transfer):
         datasets = load_data(dataset)
-
-        train_set_x, train_set_y = datasets[0]
-        valid_set_x, valid_set_y = datasets[1]
-        test_set_x, test_set_y = datasets[2]
     else:
         datasets = getHSF()
-        train_set_x = datasets[0]
-        train_set_y = datasets[1]
-        #I have not split the validation and test sets up here, I just want to see if the types are similar
-        valid_set_x = train_set_x
-        valid_set_y = train_set_y
-        test_set_x = train_set_x
-        test_set_y = train_set_y
+    train_set_x, train_set_y = datasets[0]
+    valid_set_x, valid_set_y = datasets[1]
+    test_set_x, test_set_y = datasets[2]
     # compute number of minibatches for training, validation and testing
     n_train_batches = train_set_x.get_value(borrow=True).shape[0] / batch_size
     print 'This is the vector size of the inputs' #
@@ -295,7 +289,7 @@ def test_mlp(learning_rate=0.1, L1_reg=0.00, L2_reg=0.0001, n_epochs=20,
         input=x,
         n_in=28 * 28,
         n_hidden=n_hidden,
-        n_out=10
+        n_out=36
     )
 
     # start-snippet-4
@@ -364,7 +358,7 @@ def test_mlp(learning_rate=0.1, L1_reg=0.00, L2_reg=0.0001, n_epochs=20,
     inputSize=100
     inputs=train_set_x.get_value(borrow=True) #inputs
 
-    """
+    
     print '...printing input images'
     if(not transfer):
         #print out the input images
@@ -390,7 +384,7 @@ def test_mlp(learning_rate=0.1, L1_reg=0.00, L2_reg=0.0001, n_epochs=20,
             plt.imshow(matrix,interpolation='nearest',cmap=plt.cm.Greys)
             #ocean
             savefig(fileNameTemplate+`i`,format='png') #
-    """
+    
     
     ###############
     # TRAIN MODEL #
@@ -502,7 +496,7 @@ def test_mlp(learning_rate=0.1, L1_reg=0.00, L2_reg=0.0001, n_epochs=20,
     if(not transfer):
         
         #Save a picture of a weight map of the first hidden node after training
-        """
+        
         print '...printing weight maps of H1 (hidden nodes in layer 1) after training'
         fig = plt.figure()
         ax = fig.add_subplot(1,1,1)
@@ -515,7 +509,7 @@ def test_mlp(learning_rate=0.1, L1_reg=0.00, L2_reg=0.0001, n_epochs=20,
             plt.imshow(matrix,interpolation='nearest',cmap=plt.cm.Greys)
             #ocean
             savefig(fileNameTemplate+`i`,format='png')
-        """
+        
 
         #Copy over weights that lead to activated nodes
         threshold = 0.6
@@ -608,7 +602,7 @@ def test_mlp(learning_rate=0.1, L1_reg=0.00, L2_reg=0.0001, n_epochs=20,
 
 
 
-        """
+        
         #print the weight maps (some will be randomized to pass on the next iteration of training, others will be preserved)
         print '...printing H1 weight maps after transfering learning'
         fileNameTemplate = 'wMapRelevant'
@@ -619,7 +613,7 @@ def test_mlp(learning_rate=0.1, L1_reg=0.00, L2_reg=0.0001, n_epochs=20,
             plt.imshow(matrix,interpolation='nearest',cmap=plt.cm.Greys)
             #ocean
             savefig(fileNameTemplate+`i`,format='png')
-        """
+        
 
         global transfer
         transfer = True
@@ -645,60 +639,8 @@ def test_mlp(learning_rate=0.1, L1_reg=0.00, L2_reg=0.0001, n_epochs=20,
         print '     non relevant weight maps are re-initialized'
         """
 
-def getHSF():
-
-    dataset =()
-    names = ()
-    parseNames = ()
-    bigt = []
-    pathToImageFolder = "/Users/sriramsomasundaram/Desktop/CS/TransferLearning/Python/NewDataset/"
-    files_in_dir = os.listdir(pathToImageFolder)
-    for file_in_dir in files_in_dir:
-        im = Image.open(pathToImageFolder + file_in_dir)
-        foo = file_in_dir.split("_", 8)
-        names = names + (foo[7],)
-        t=[0] * 784
-        pixels = im.load()
-        for x in range(28):
-            for y in range(28):
-                px = pixels[x,y]
-                t[(x+1)*(y+1)-1]=((0.2989*px[0]/255)+(0.5870*px[1]/255)+(.1140*px[2]/255),)
-        bigt.append(t)
-    bigt = numpy.array(bigt)
-    for x in names:
-        parseNames = parseNames + (convert(x),)
-    parseNames = numpy.array(parseNames)
-    dataset = dataset + (bigt,)
-    dataset = dataset + (parseNames,)
-    
-    #train_set_x = numpy.array(bigt, dtype=theano.config.floatX)
-    train_set_y = numpy.asarray(parseNames, dtype=theano.config.floatX)
-    train_set_x = train_set_y
-    train_set_x = theano.shared(value = train_set_x)
-    train_set_y = theano.shared(value = train_set_y)
-    """
-    train_set_x = theano.shared(value = numpy.array(bigt), dtype=theano.config.floatX, borrow=False)
-    #train_set_x = theano.shared(value = numpy.zeros((50000,784), dtype=theano.config.floatX), borrow = True)
-    train_set_y = theano.shared(value = numpy.asarray(parseNames), borrow = False)
-    #train_set_y = theano.shared(value = numpy.zeros((784,1), dtype=theano.config.floatX), borrow = True)"""
-    return (train_set_x, train_set_y)
-
-def convert(str):
-    val = ord(str.lower())
-    if(val>= 97 and val<= 122):
-        return numpy.int64(val-96)
-    else:
-        return numpy.int64(str)
 
 if __name__ == '__main__':
     global transfer
     transfer = False
     test_mlp()
-    """
-    dataset='mnist.pkl.gz'
-    datasets = load_data(dataset)
-    train_set_x, train_set_y = datasets[0]
-    valid_set_x, valid_set_y = datasets[1]
-    test_set_x, test_set_y = datasets[2]
-    print type(datasets)
-    print type(train_set_x), type(train_set_y)"""
