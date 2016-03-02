@@ -7,6 +7,7 @@ The starter MLP code is from http://deeplearning.net/tutorial/mlp.html
 __docformat__ = 'restructedtext en'
 
 
+import cPickle
 import os
 import sys
 import timeit
@@ -257,6 +258,8 @@ def test_mlp(learning_rate=.1, L1_reg=0.00, L2_reg=0.0001, n_epochs=20,
         datasets = load_data(dataset)
     else:
         datasets = getHSF()
+        #f = open('HSF.p','rb')
+        #datasets = cPickle.load(f)
     train_set_x, train_set_y = datasets[0]
     valid_set_x, valid_set_y = datasets[1]
     test_set_x, test_set_y = datasets[2]
@@ -357,8 +360,8 @@ def test_mlp(learning_rate=.1, L1_reg=0.00, L2_reg=0.0001, n_epochs=20,
         #should be averaged on
     inputSize=100
     inputs=train_set_x.get_value(borrow=True) #inputs
-
     
+    """
     print '...printing input images'
     if(not transfer):
         #print out the input images
@@ -371,7 +374,7 @@ def test_mlp(learning_rate=.1, L1_reg=0.00, L2_reg=0.0001, n_epochs=20,
             matrix = numpy.matrix(a)
             plt.imshow(matrix, interpolation = 'nearest',cmap=plt.cm.Greys)
             savefig(fileNameTemplate+`i`,format = 'png')
-
+    
         #Save a picture of a weight map of the first hidden node before training
         fig = plt.figure() #
         ax = fig.add_subplot(1,1,1)
@@ -385,7 +388,7 @@ def test_mlp(learning_rate=.1, L1_reg=0.00, L2_reg=0.0001, n_epochs=20,
             #ocean
             savefig(fileNameTemplate+`i`,format='png') #
     
-    
+    """
     ###############
     # TRAIN MODEL #
     ###############
@@ -496,7 +499,7 @@ def test_mlp(learning_rate=.1, L1_reg=0.00, L2_reg=0.0001, n_epochs=20,
     if(not transfer):
         
         #Save a picture of a weight map of the first hidden node after training
-        
+        """
         print '...printing weight maps of H1 (hidden nodes in layer 1) after training'
         fig = plt.figure()
         ax = fig.add_subplot(1,1,1)
@@ -509,7 +512,7 @@ def test_mlp(learning_rate=.1, L1_reg=0.00, L2_reg=0.0001, n_epochs=20,
             plt.imshow(matrix,interpolation='nearest',cmap=plt.cm.Greys)
             #ocean
             savefig(fileNameTemplate+`i`,format='png')
-        
+        """
 
         #Copy over weights that lead to activated nodes
         threshold = 0.6
@@ -602,7 +605,7 @@ def test_mlp(learning_rate=.1, L1_reg=0.00, L2_reg=0.0001, n_epochs=20,
 
 
 
-        
+        """
         #print the weight maps (some will be randomized to pass on the next iteration of training, others will be preserved)
         print '...printing H1 weight maps after transfering learning'
         fileNameTemplate = 'wMapRelevant'
@@ -613,7 +616,7 @@ def test_mlp(learning_rate=.1, L1_reg=0.00, L2_reg=0.0001, n_epochs=20,
             plt.imshow(matrix,interpolation='nearest',cmap=plt.cm.Greys)
             #ocean
             savefig(fileNameTemplate+`i`,format='png')
-        
+        """
 
         global transfer
         transfer = True
