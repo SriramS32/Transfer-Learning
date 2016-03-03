@@ -3,6 +3,7 @@ import numpy
 import os 
 import theano 
 import theano.tensor as T
+import cPickle
 
 def convert(str):
     val = ord(str.lower())
@@ -16,7 +17,7 @@ def getHSF():
     names = ()
     parseNames = [] 
     bigt = []
-    pathToImageFolder = "/Users/sriramsomasundaram/Desktop/CS/TransferLearning/PicturesResized/"
+    pathToImageFolder = "/Users/sriramsomasundaram/Desktop/CS/TransferLearning/MergedResized/"
     files_in_dir = os.listdir(pathToImageFolder)
     bigt = numpy.zeros((0,784),dtype='float32')
     for file_in_dir in files_in_dir:
@@ -87,7 +88,8 @@ def getHSF():
 
     rval = [(train_set_x, train_set_y), (valid_set_x, valid_set_y),
             (test_set_x, test_set_y)]
-    return rval
+    #return rval
+    cPickle.dump(rval,open('HSF.p','wb'))
 
 
 if __name__ == "__main__":
