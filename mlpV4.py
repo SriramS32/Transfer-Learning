@@ -223,7 +223,7 @@ class MLP(object):
 
 #mlp.LogisticRegression.W
 #mlp.HiddenLayer.W
-def test_mlp(learning_rate=.1, L1_reg=0.00, L2_reg=0.0001, n_epochs=20,
+def test_mlp(learning_rate=.1, L1_reg=0.00, L2_reg=0.0001, n_epochs=1000,
              dataset='mnist.pkl.gz', batch_size=20, n_hidden=100):
 #epoch is originally 500, hidden is 500, learning rate is 0.01
     """
@@ -257,9 +257,9 @@ def test_mlp(learning_rate=.1, L1_reg=0.00, L2_reg=0.0001, n_epochs=20,
     if(transfer):
         datasets = load_data(dataset)
     else:
-        datasets = getHSF()
-        #f = open('HSF.p','rb')
-        #datasets = cPickle.load(f)
+        #datasets = getHSF()
+        f = open('HSF.p','rb')
+        datasets = cPickle.load(f)
     train_set_x, train_set_y = datasets[0]
     valid_set_x, valid_set_y = datasets[1]
     test_set_x, test_set_y = datasets[2]
