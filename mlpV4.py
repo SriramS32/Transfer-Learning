@@ -513,7 +513,7 @@ def test_mlp(learning_rate=.1, L1_reg=0.00, L2_reg=0.0001, n_epochs=1000,
             #ocean
             savefig(fileNameTemplate+`i`,format='png')
         """
-
+        
         #Copy over weights that lead to activated nodes
         threshold = 0.6
         n_in = 28*28

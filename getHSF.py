@@ -17,9 +17,11 @@ def getHSF():
     names = ()
     parseNames = [] 
     bigt = []
-    pathToImageFolder = "/Users/sriramsomasundaram/Desktop/CS/TransferLearning/MergedResized/"
+    #pathToImageFolder = "/Users/sriramsomasundaram/Desktop/CS/TransferLearning/MergedResized/"
+    pathToImageFolder = "/Users/sriramsomasundaram/Desktop/HSFresized/"
     files_in_dir = os.listdir(pathToImageFolder)
     bigt = numpy.zeros((0,784),dtype='float32')
+    count = 0
     for file_in_dir in files_in_dir:
         try:        
             im = Image.open(pathToImageFolder + file_in_dir)
@@ -37,6 +39,9 @@ def getHSF():
                 t1[y,x] = (0.2989*px[0]/255)+(0.5870*px[1]/255)+(.1140*px[2]/255)
         t = numpy.reshape(t1,(1,784))
         bigt = numpy.vstack((bigt,t))
+        if count % 10000 == 0:
+            print count
+        count+=1
     bigt = numpy.array(bigt,dtype='float32')
     for x in names:
         parseNames.append(convert(x))
@@ -89,7 +94,7 @@ def getHSF():
     rval = [(train_set_x, train_set_y), (valid_set_x, valid_set_y),
             (test_set_x, test_set_y)]
     #return rval
-    cPickle.dump(rval,open('HSF.p','wb'))
+    cPickle.dump(rval,open('HSFBig.p','wb'))
 
 
 if __name__ == "__main__":
