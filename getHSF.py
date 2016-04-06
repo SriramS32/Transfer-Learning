@@ -18,7 +18,8 @@ def getHSF():
     parseNames = [] 
     bigt = []
     #pathToImageFolder = "/Users/sriramsomasundaram/Desktop/CS/TransferLearning/MergedResized/"
-    pathToImageFolder = "/Users/sriramsomasundaram/Desktop/HSFresized/"
+    #pathToImageFolder = "/Users/sriramsomasundaram/Desktop/HSFresized/"
+    pathToImageFolder = "/home/rcf-proj/sn/sriramso/HSFresized"
     files_in_dir = os.listdir(pathToImageFolder)
     bigt = numpy.zeros((0,784),dtype='float32')
     count = 0
