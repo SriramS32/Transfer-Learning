@@ -19,7 +19,8 @@ def getHSF():
     bigt = []
     #pathToImageFolder = "/Users/sriramsomasundaram/Desktop/CS/TransferLearning/MergedResized/"
     #pathToImageFolder = "/Users/sriramsomasundaram/Desktop/HSFresized/"
-    pathToImageFolder = "/home/rcf-proj/sn/sriramso/HSFresized"
+    #make sure you have a / at the end of the file name
+    pathToImageFolder = "/home/rcf-proj/sn/sriramso/HSFresized/"
     files_in_dir = os.listdir(pathToImageFolder)
     bigt = numpy.zeros((0,784),dtype='float32')
     count = 0
@@ -40,7 +41,7 @@ def getHSF():
                 t1[y,x] = (0.2989*px[0]/255)+(0.5870*px[1]/255)+(.1140*px[2]/255)
         t = numpy.reshape(t1,(1,784))
         bigt = numpy.vstack((bigt,t))
-        if count % 10000 == 0:
+        if count % 1000 == 0:
             print count
         count+=1
     bigt = numpy.array(bigt,dtype='float32')
