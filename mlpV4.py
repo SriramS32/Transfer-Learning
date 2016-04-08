@@ -15,10 +15,13 @@ from PIL import Image
 
 import numpy
 from numpy import *
-from pylab import *
 
+"""
+#uncomment for creating images
+from pylab import *
 import matplotlib.cm as cm
 import matplotlib.pylab as plt
+"""
 
 import theano
 import theano.tensor as T
@@ -223,7 +226,7 @@ class MLP(object):
 
 #mlp.LogisticRegression.W
 #mlp.HiddenLayer.W
-def test_mlp(learning_rate=.1, L1_reg=0.00, L2_reg=0.0001, n_epochs=1000,
+def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
              dataset='mnist.pkl.gz', batch_size=20, n_hidden=100):
 #epoch is originally 500, hidden is 500, learning rate is 0.01
     """
@@ -258,7 +261,7 @@ def test_mlp(learning_rate=.1, L1_reg=0.00, L2_reg=0.0001, n_epochs=1000,
         datasets = load_data(dataset)
     else:
         #datasets = getHSF()
-        f = open('HSF.p','rb')
+        f = open('HSFBig.p','rb')
         datasets = cPickle.load(f)
     train_set_x, train_set_y = datasets[0]
     valid_set_x, valid_set_y = datasets[1]
@@ -562,8 +565,10 @@ def test_mlp(learning_rate=.1, L1_reg=0.00, L2_reg=0.0001, n_epochs=1000,
             #print ''
         print 'A total number of ' + str(count) + ' H1 nodes passed the threshold'
         
-        
-
+        #printing out count of hidden nodes
+        outFile3 = open('transfer.txt','w')
+        outFile3.write(str(count))
+        outFile3.write('\n')
 
 
 
@@ -595,7 +600,7 @@ def test_mlp(learning_rate=.1, L1_reg=0.00, L2_reg=0.0001, n_epochs=1000,
                 count += 1
         print 'A total number of ' + str(count) + ' H2 nodes passed the threshold'
 
-
+        outFile3.write(str(count))
 
 
 
