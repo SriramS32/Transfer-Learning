@@ -226,7 +226,7 @@ class MLP(object):
 
 #mlp.LogisticRegression.W
 #mlp.HiddenLayer.W
-def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
+def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=15,
              dataset='mnist.pkl.gz', batch_size=20, n_hidden=100):
 #epoch is originally 500, hidden is 500, learning rate is 0.01
     """
@@ -257,7 +257,7 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
 
    """
    #Rahul -  a transfer here will run the code for the second data set first. Not transfer, will run the code in the correct order
-    if(transfer):
+    if(not transfer):
         datasets = load_data(dataset)
     else:
         #datasets = getHSF()
@@ -290,13 +290,24 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
     # construct the MLP class
     #problem is you can't pass weights through here, b/c of gradient descent
     #algorithms use these parameters
-    classifier = MLP(
-        rng=rng,
-        input=x,
-        n_in=28 * 28,
-        n_hidden=n_hidden,
-        n_out=36
-    )
+
+    #MNIST only uses 10, HSF uses 36
+    if(not transfer):
+        classifier = MLP(
+            rng=rng,
+            input=x,
+            n_in=28 * 28,
+            n_hidden=n_hidden,
+            n_out=10
+        )
+    else:
+        classifier = MLP(
+            rng=rng,
+            input=x,
+            n_in=28 * 28,
+            n_hidden=n_hidden,
+            n_out=36
+        )
 
     # start-snippet-4
     # the cost we minimize during training is the negative log likelihood of
@@ -527,16 +538,19 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
         """
         
         #Copy over weights that lead to activated nodes
-        threshold = 0.6
+        threshold = 0.0
         n_in = 28*28
         #inputs as d are passed from the train_set_x above
         hidden1W = classifier.hiddenLayer.W.get_value()
+        hidden1Wcopy = hidden1W
         #just being safe for now with all the copies, can change this later
         aveList = []
+        #aveList represents the average hidden node activations for layer 1
         print 'starting transfer calculations'
         for i in range(0,n_hidden):
             x = 0
             for j in range(0,inputSize):
+                #Design choice to use absolute value b/c a positive activation and a negative activation were both considered important
                 x += abs(numpy.tanh(numpy.tensordot(inputs[j,:],hidden1W[:,i],axes=1)))
             aveList.append(x/inputSize)
 
@@ -581,18 +595,21 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
 
 
 
-
-
+        hidden1Act = numpy.zeros((1,100))
+        #Making a dummy hidden layer variable to edit
 
         #now for the next hidden layer :)
         hidden2W = classifier.hiddenLayer2.W.get_value()
         aveList = []
+        #aveList here represents the average hidden node activations for layer 2
         print 'starting next hidden layer calculation'
         for i in range(0,n_hidden):
             x = 0
-            for j in range(0,n_hidden):
-                x += abs(numpy.tanh(numpy.tensordot(inputs[j,:],hidden2W[:,i],axes=1)))
-                aveList.append(x/inputSize)
+            for j in range(0,inputSize):
+                for k in range(0,n_hidden):
+                    hidden1Act[0][k] = numpy.tanh(numpy.tensordot(inputs[j,:],hidden1Wcopy[:,k],axes=1))
+                x += abs(numpy.tanh(numpy.tensordot(hidden1Act[0,:],hidden2W[:,i],axes=1)))
+            aveList.append(x/inputSize)
         print 'ending hidden 2 calculation'
         count = 0
         for i in range(0,n_hidden):
