@@ -427,6 +427,15 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
         outFile = open('outTransfer.txt','w')
 
 
+    #Inserted code for printing out validation after randomization
+    validation_losses = [validate_model(i) for i
+                         in xrange(n_valid_batches)]
+    this_validation_loss = numpy.mean(validation_losses)
+    outFile.write(str(this_validation_loss*100)) #printing the error out to the file, turned to string b/c still using write function
+    outFile.write('\n')
+
+
+
 
     while (epoch < n_epochs) and (not done_looping):
         epoch = epoch + 1
@@ -576,7 +585,7 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
 
 
         #now for the next hidden layer :)
-        hidden2W = classifier.hiddenLayer.W.get_value()
+        hidden2W = classifier.hiddenLayer2.W.get_value()
         aveList = []
         print 'starting next hidden layer calculation'
         for i in range(0,n_hidden):
