@@ -227,7 +227,7 @@ class MLP(object):
 
 #mlp.LogisticRegression.W
 #mlp.HiddenLayer.W
-def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=15,
+def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
              dataset='mnist.pkl.gz', batch_size=20, n_hidden=100):
 #epoch is originally 500, hidden is 500, learning rate is 0.01
     """
@@ -258,7 +258,7 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=15,
 
    """
    #Rahul -  a transfer here will run the code for the second data set first. Not transfer, will run the code in the correct order
-    if(transfer):
+    if(not transfer):
         #datasets = load_data(dataset)
         f = open('HSFNums.p','rb')
         datasets = pickle.load(f)
@@ -296,7 +296,7 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=15,
     #algorithms use these parameters
 
     #MNIST only uses 10, HSF uses 36
-    if(transfer):
+    if(not transfer):
         classifier = MLP(
             rng=rng,
             input=x,
@@ -310,7 +310,7 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=15,
             input=x,
             n_in=28 * 28,
             n_hidden=n_hidden,
-            n_out=26
+            n_out=27
         )
 
     # start-snippet-4
