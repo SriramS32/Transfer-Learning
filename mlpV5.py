@@ -542,7 +542,7 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
         """
         
         #Copy over weights that lead to activated nodes
-        threshold = 0.0
+        threshold = 0.4
         n_in = 28*28
         #inputs as d are passed from the train_set_x above
         hidden1W = classifier.hiddenLayer.W.get_value()
@@ -622,7 +622,7 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
                                 rng.uniform(
                                     low=-numpy.sqrt(6. / (n_hidden + n_hidden)),
                                     high=numpy.sqrt(6. / (n_hidden + n_hidden)),
-                                    size = (n_in,1)
+                                    size = (n_hidden,1)
                                 ),
                                 dtype=theano.config.floatX
                             ).flatten()
