@@ -227,8 +227,8 @@ class MLP(object):
 
 #mlp.LogisticRegression.W
 #mlp.HiddenLayer.W
-def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
-             dataset='mnist.pkl.gz', batch_size=20, n_hidden=100):
+def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=50,
+             dataset='mnist.pkl.gz', batch_size=20, n_hidden=500):
 #epoch is originally 500, hidden is 500, learning rate is 0.01
     """
     Demonstrate stochastic gradient descent optimization for a multilayer
@@ -258,13 +258,13 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
 
    """
    #Rahul -  a transfer here will run the code for the second data set first. Not transfer, will run the code in the correct order
-    if(not transfer):
+    if(transfer):
         #datasets = load_data(dataset)
         f = open('HSFNums.p','rb')
         datasets = pickle.load(f)
     else:
         #datasets = getHSF()
-        f = open('HSFLetters.p','rb')
+        f = open('HSFLetters2.p','rb')
         datasets = pickle.load(f)
     train_set_x, train_set_y = datasets[0]
     valid_set_x, valid_set_y = datasets[1]
@@ -296,7 +296,7 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
     #algorithms use these parameters
 
     #MNIST only uses 10, HSF uses 36
-    if(not transfer):
+    if(transfer):
         classifier = MLP(
             rng=rng,
             input=x,
@@ -542,7 +542,7 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
         """
         
         #Copy over weights that lead to activated nodes
-        threshold = 0.4
+        threshold = 0.0
         n_in = 28*28
         #inputs as d are passed from the train_set_x above
         hidden1W = classifier.hiddenLayer.W.get_value()
@@ -599,7 +599,7 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
 
 
 
-        hidden1Act = numpy.zeros((1,100))
+        hidden1Act = numpy.zeros((1,n_hidden))
         #Making a dummy hidden layer variable to edit
 
         #now for the next hidden layer :)
