@@ -8,7 +8,7 @@ import cPickle
 def convert(str):
     val = ord(str.lower())
     if(val>= 97 and val<= 122):
-        return numpy.int64(val-96)
+        return numpy.int64(val-97)
     else:
         return numpy.int64(str)
 
@@ -20,7 +20,7 @@ def getHSF():
     #pathToImageFolder = "/Users/sriramsomasundaram/Desktop/CS/TransferLearning/MergedResized/"
     #pathToImageFolder = "/Users/sriramsomasundaram/Desktop/HSFresized/"
     #make sure you have a / at the end of the file name
-    pathToImageFolder = "/home/rcf-proj/sn/sriramso/HSFresized/"
+    pathToImageFolder = "/home/rcf-proj/sn/sriramso/HSFresizedtest/"
     files_in_dir = os.listdir(pathToImageFolder)
     bigt = numpy.zeros((0,784),dtype='float32')
     count = 0
@@ -96,7 +96,7 @@ def getHSF():
     rval = [(train_set_x, train_set_y), (valid_set_x, valid_set_y),
             (test_set_x, test_set_y)]
     #return rval
-    cPickle.dump(rval,open('HSFBig.p','wb'))
+    cPickle.dump(rval,open('HSFLetters2.p','wb'))
 
 
 if __name__ == "__main__":
