@@ -227,8 +227,8 @@ class MLP(object):
 
 #mlp.LogisticRegression.W
 #mlp.HiddenLayer.W
-def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=50,
-             dataset='mnist.pkl.gz', batch_size=20, n_hidden=500):
+def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
+             dataset='mnist.pkl.gz', batch_size=20, n_hidden=100):
 #epoch is originally 500, hidden is 500, learning rate is 0.01
     """
     Demonstrate stochastic gradient descent optimization for a multilayer
@@ -258,7 +258,7 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=50,
 
    """
    #Rahul -  a transfer here will run the code for the second data set first. Not transfer, will run the code in the correct order
-    if(transfer):
+    if(not transfer):
         #datasets = load_data(dataset)
         f = open('HSFNums.p','rb')
         datasets = pickle.load(f)
@@ -267,6 +267,10 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=50,
         f = open('HSFLetters2.p','rb')
         datasets = pickle.load(f)
     train_set_x, train_set_y = datasets[0]
+    #Be able to reduce data here, DATA REDUCTION
+    train_set_x,train_set_y = train_set_x[0:int(.9*train_set_x.shape[0]),:],train_set_y[0:int(.9*train_set_y.shape[0]),:]
+
+
     valid_set_x, valid_set_y = datasets[1]
     test_set_x, test_set_y = datasets[2]
     f.close()
@@ -296,7 +300,7 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=50,
     #algorithms use these parameters
 
     #MNIST only uses 10, HSF uses 36
-    if(transfer):
+    if(not transfer):
         classifier = MLP(
             rng=rng,
             input=x,
@@ -310,7 +314,7 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=50,
             input=x,
             n_in=28 * 28,
             n_hidden=n_hidden,
-            n_out=27
+            n_out=26
         )
 
     # start-snippet-4
@@ -542,7 +546,7 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=50,
         """
         
         #Copy over weights that lead to activated nodes
-        threshold = 0.0
+        threshold = 1.0
         n_in = 28*28
         #inputs as d are passed from the train_set_x above
         hidden1W = classifier.hiddenLayer.W.get_value()
@@ -659,7 +663,7 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=50,
         global tensor2
         tensor = theano.shared(value=hidden1W,name = 'W', borrow=True)
         #tensor = theano.shared(value = classifier.hiddenLayer.W.get_value(), name = 'tensor', borrow=True)
-        tensor2 = theano.shared(value = classifier.hiddenLayer2.W.get_value(), name = 'tensor2', borrow=True)
+        tensor2 = theano.shared(value = hidden2W, name = 'tensor2', borrow=True)
         #tensor2 = None
 
         test_mlp()
