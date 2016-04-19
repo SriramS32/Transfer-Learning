@@ -5,6 +5,8 @@ import theano
 import theano.tensor as T
 import cPickle
 
+#Converting a-z & A-Z -> 0-25
+#Converting any integer to its corresponding int64 value.
 def convert(str):
     val = ord(str.lower())
     if(val>= 97 and val<= 122):
@@ -12,11 +14,23 @@ def convert(str):
     else:
         return numpy.int64(str)
 
+"""
+Files in a directory are iterated through and opened using Python Image library (PIL).
+The labels of the images are extracted and put into names tuple. The pixel values of the image
+are placed into t1 in grayscale (converted from RGB). The (1, 784) (from the 28*28 pixel size) 
+tuple is put into a numpy array and stacked onto bigt (type float32). Then, the names are
+converted to int64 type using convert() and placed into parseNames. The
+data are concatenated with the labels and split into train, test, and validation (dev).  
+The shared dataset function is used to load dataset into shared variables and allow 
+Theano to use GPU memory. Finally, the datasets are concatenated together and pickled.
+
+"""
 def getHSF():
     train_dataset, dev_dataset, test_dataset = (), (), ()
     names = ()
     parseNames = [] 
     bigt = []
+
     #pathToImageFolder = "/Users/sriramsomasundaram/Desktop/CS/TransferLearning/MergedResized/"
     #pathToImageFolder = "/Users/sriramsomasundaram/Desktop/HSFresized/"
     #make sure you have a / at the end of the file name
@@ -30,23 +44,25 @@ def getHSF():
         except: 
             continue
         foo = file_in_dir.split("_", 8)
+        #Retreiving image labels
         names = names + (foo[7],)
         t1 = numpy.zeros((28,28),dtype = 'float32')
-        #t = numpy.zeros((1,784),dtype='float32')
         pixels = im.load()
         for x in range(28):
             for y in range(28):
                 px = pixels[x,y]
-                #t[0,(x+1)*(y+1)-1]=(0.2989*px[0]/255)+(0.5870*px[1]/255)+(.1140*px[2]/255)
+                #Converting to grayscale
                 t1[y,x] = (0.2989*px[0]/255)+(0.5870*px[1]/255)+(.1140*px[2]/255)
         t = numpy.reshape(t1,(1,784))
         bigt = numpy.vstack((bigt,t))
+        #Reshaping image and adding to bigger tuple
         if count % 1000 == 0:
             print count
         count+=1
     bigt = numpy.array(bigt,dtype='float32')
     for x in names:
         parseNames.append(convert(x))
+        #converting name labels to integers
     parseNames = numpy.array(parseNames,dtype='int64')
 
     # breaking dataset into train test and dev set (80%, 10%, 10% split)   
@@ -55,7 +71,6 @@ def getHSF():
     dev_bigt, dev_parseNames = bigt[int(.8*num_datapoints):int(.9*num_datapoints),:], parseNames[int(.8*num_datapoints):int(.9*num_datapoints)]
     test_bigt, test_parseNames = bigt[int(.9*num_datapoints):,:], parseNames[int(.9*num_datapoints):]
 
-    #print train_bigt.shape, dev_bigt.shape, train_parseNames.shape, dev_parseNames.shape
 
     train_dataset = train_dataset + (train_bigt,)
     train_dataset = train_dataset + (train_parseNames,)
