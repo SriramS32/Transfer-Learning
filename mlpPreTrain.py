@@ -143,6 +143,8 @@ class DBN(object):
                             n_visible=input_size,
                             n_hidden=hidden_layers_sizes[i],
                             W=sigmoid_layer.W,
+                            #Transfer weights from other place over here.
+                            
                             hbias=sigmoid_layer.b)
             self.rbm_layers.append(rbm_layer)
 
@@ -510,8 +512,8 @@ class MLP(object):
 
         # keep track of model input
         self.input = input
-def test_DBN(finetune_lr=0.1, pretraining_epochs=10,
-             pretrain_lr=0.01, k=1, training_epochs=10,
+def test_DBN(finetune_lr=0.1, pretraining_epochs=1,
+             pretrain_lr=0.01, k=1, training_epochs=1,
              dataset='mnist.pkl.gz', batch_size=10):
     """
     Demonstrates how to train and test a Deep Belief Network.
@@ -535,7 +537,7 @@ def test_DBN(finetune_lr=0.1, pretraining_epochs=10,
     """
 
     f = open('HSFNums.p','rb')
-    #f = open('HSFLetters.p','rb')
+    #f = open('HSFLetters2.p','rb')
     datasets = pickle.load(f)
 
     train_set_x, train_set_y = datasets[0]
@@ -550,7 +552,7 @@ def test_DBN(finetune_lr=0.1, pretraining_epochs=10,
     print '... building the model'
     # construct the Deep Belief Network
     dbn = DBN(numpy_rng=numpy_rng, n_ins=28 * 28,
-              hidden_layers_sizes=[1000, 1000, 1000],
+              hidden_layers_sizes=[100, 100],
               n_outs=10)
 
     # start-snippet-2
@@ -719,7 +721,7 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=50,
    """
    #Rahul -  a transfer here will run the code for the second data set first. Not transfer, will run the code in the correct order
     f = open('HSFNums.p','rb')
-    #f = open('HSFLetters.p','rb')
+    #f = open('HSFLetters2.p','rb')
     datasets = pickle.load(f)
 
     train_set_x, train_set_y = datasets[0]
