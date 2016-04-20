@@ -262,17 +262,20 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
         #datasets = load_data(dataset)
         f = open('HSFNums.p','rb')
         datasets = pickle.load(f)
+        f2 = open('HSFLetters2.p','rb')
+        datasetsTransfer = pickle.load(f2)
+
     else:
         #datasets = getHSF()
         f = open('HSFLetters2.p','rb')
         datasets = pickle.load(f)
+        #f2 = open('HSFNums.p','rb')
+        #datasetsTransfer = pickle.load(f2)
+
     train_set_x, train_set_y = datasets[0]
-    #Be able to reduce data here, DATA REDUCTION
-    train_set_x,train_set_y = train_set_x[0:int(.9*train_set_x.shape[0]),:],train_set_y[0:int(.9*train_set_y.shape[0]),:]
-
-
     valid_set_x, valid_set_y = datasets[1]
     test_set_x, test_set_y = datasets[2]
+
     f.close()
     # compute number of minibatches for training, validation and testing
     n_train_batches = train_set_x.get_value(borrow=True).shape[0] / batch_size
@@ -281,6 +284,12 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
     print n_train_batches #
     n_valid_batches = valid_set_x.get_value(borrow=True).shape[0] / batch_size
     n_test_batches = test_set_x.get_value(borrow=True).shape[0] / batch_size
+
+    if(not transfer):
+        #Be able to reduce data here, DATA REDUCTION
+        train_set_x = train_set_x[0:int(.8*n_train_batches*batch_size),:]
+        train_set_y = train_set_y[0:int(.8*n_train_batches*batch_size)]
+
 
     ######################
     # BUILD ACTUAL MODEL #
@@ -381,7 +390,9 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
     #the size is how many in put images should be printed out and how many input images
         #should be averaged on
     inputSize=100
-    inputs=train_set_x.get_value(borrow=True) #inputs
+    if(not transfer):
+        train_set_x2, train_set_y2 = datasetsTransfer[0]
+        inputs=train_set_x2.get_value(borrow=True) #inputs
     
     """
     print '...printing input images'
@@ -546,7 +557,7 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
         """
         
         #Copy over weights that lead to activated nodes
-        threshold = 1.0
+        threshold = 0.0
         n_in = 28*28
         #inputs as d are passed from the train_set_x above
         hidden1W = classifier.hiddenLayer.W.get_value()
