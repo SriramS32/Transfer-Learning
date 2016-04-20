@@ -646,6 +646,7 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
         print 'A total number of ' + str(count) + ' H2 nodes passed the threshold'
 
         outFile3.write(str(count))
+        outFile3.close()
 
 
 
