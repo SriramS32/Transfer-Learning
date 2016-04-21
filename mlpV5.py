@@ -258,7 +258,7 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
 
    """
    #Rahul -  a transfer here will run the code for the second data set first. Not transfer, will run the code in the correct order
-    if(not transfer):
+    if(transfer):
         #datasets = load_data(dataset)
         f = open('HSFNums.p','rb')
         datasets = pickle.load(f)
@@ -283,8 +283,8 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
 
     if(transfer):
         #Be able to reduce data here, DATA REDUCTION
-        train_set_x = train_set_x[0:int(.8*n_train_batches*batch_size),:]
-        train_set_y = train_set_y[0:int(.8*n_train_batches*batch_size)]
+        train_set_x = train_set_x[0:int(0.4*n_train_batches*batch_size),:]
+        train_set_y = train_set_y[0:int(0.4*n_train_batches*batch_size)]
 
 
     ######################
@@ -305,7 +305,7 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
     #algorithms use these parameters
 
     #MNIST only uses 10, HSF uses 36
-    if(not transfer):
+    if(transfer):
         classifier = MLP(
             rng=rng,
             input=x,
@@ -387,8 +387,8 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
         #should be averaged on
     inputSize=100
     if(not transfer):
-        f2 = open('HSFLetters2.p','rb')
-        #f2 = open('HSFNums.p','rb')
+        #f2 = open('HSFLetters2.p','rb')
+        f2 = open('HSFNums.p','rb')
         datasetsTransfer = pickle.load(f2)
         train_set_x2, train_set_y2 = datasetsTransfer[0]
         inputs=train_set_x2.get_value(borrow=True) #inputs
