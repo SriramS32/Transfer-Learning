@@ -17,12 +17,6 @@ from PIL import Image
 import numpy
 from numpy import *
 
-"""
-#uncomment for creating images
-from pylab import *
-import matplotlib.cm as cm
-import matplotlib.pylab as plt
-"""
 
 import theano
 import theano.tensor as T
@@ -32,8 +26,14 @@ from getHSF import getHSF
 
 from logistic_sgd import LogisticRegression, load_data
 
+# HiddenLayer class is responsible for creating weights (initializing if necessary) between inputs and outputs
+# MLP class collates hidden layers together (currently 2) along with a log regression layer and defines regularization and errors
+# test_mlp() performs the following sequentially:
+#     1. Trains the network on one dataset (HSF_Nums or HSF_Letters)
+#     2a. Exposes the network to select data from the other dataset
+#     2b. Weights from activated hidden nodes (|hnode|>=threshold) are stored in global shared theano variables, whereas the rest are re-initialized
+#     3. Trains the network again on the other dataset
 
-# start-snippet-1
 class HiddenLayer(object):
     def __init__(self, rng, input, n_in, n_out, W=None, b=None,
                  activation=T.tanh):
@@ -63,7 +63,6 @@ class HiddenLayer(object):
                            layer
         """
         self.input = input
-        # end-snippet-1
 
         # `W` is initialized with `W_values` which is uniformely sampled
         # from sqrt(-6./(n_in+n_hidden)) and sqrt(6./(n_in+n_hidden))
@@ -107,7 +106,6 @@ class HiddenLayer(object):
         self.params = [self.W, self.b]
 
 
-# start-snippet-2
 class MLP(object):
     """Multi-Layer Perceptron Class
 
@@ -140,12 +138,18 @@ class MLP(object):
         :param n_out: number of output units, the dimension of the space in
         which the labels lie
 
+        :type Whidden: theano shared variables
+        :param Whidden: first hidden layer
+
+        :type Whidden2: theano shared variable
+        :param Whidden: second hidden layer
+
         """
 
-        # Since we are dealing with a one hidden layer MLP, this will translate
-        # into a HiddenLayer with a tanh activation function connected to the
-        # LogisticRegression layer; the activation function can be replaced by
-        # sigmoid or any other nonlinear function
+        #Linking the hidden layers here. If a network is newly initialized (not transfer), then
+        #the weights will be set the None and reinitialized.
+        #Else (if the network is to be transferred) then use the global
+        #theano shared variables of tensor and tensor2
 
         #Add ons: Can create any number of layers here, just link the inputs and outputs
         if (not transfer):
@@ -190,7 +194,6 @@ class MLP(object):
             n_out=n_out,
             W=Wlog
         )
-        # end-snippet-2 start-snippet-3
         # L1 norm ; one regularization option is to enforce L1 norm to
         # be small
         self.L1 = (
@@ -219,22 +222,16 @@ class MLP(object):
         # the parameters of the model are the parameters of the two layer it is
         # made out of
         self.params = self.hiddenLayer.params + self.logRegressionLayer.params
-        # end-snippet-3
 
         # keep track of model input
         self.input = input
 
 
-#mlp.LogisticRegression.W
-#mlp.HiddenLayer.W
 def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
              dataset='mnist.pkl.gz', batch_size=20, n_hidden=100):
-#epoch is originally 500, hidden is 500, learning rate is 0.01
     """
     Demonstrate stochastic gradient descent optimization for a multilayer
     perceptron
-
-    This is demonstrated on MNIST.
 
     :type learning_rate: float
     :param learning_rate: learning rate used (factor for the stochastic
@@ -257,7 +254,10 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
 
 
    """
-   #Rahul -  a transfer here will run the code for the second data set first. Not transfer, will run the code in the correct order
+   #Note - transfer is used to check whether test_mlp is running for the first time with new weights or second time with transferred weights
+   #Transfer is initialized to be false.
+   #a transfer in the if statement will run the code for the Letters data set first and Numbers data set second.
+   #(Not transfer) will run the code for the Numbers data set first and Letters data set second.
     if(transfer):
         #datasets = load_data(dataset)
         f = open('HSFNums.p','rb')
@@ -275,16 +275,17 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
     f.close()
     # compute number of minibatches for training, validation and testing
     n_train_batches = train_set_x.get_value(borrow=True).shape[0] / batch_size
+    #total size of valid data is printed
     print 'This is the vector size of the inputs' #
     print train_set_x.get_value(borrow=True).shape #
     print n_train_batches #
     n_valid_batches = valid_set_x.get_value(borrow=True).shape[0] / batch_size
     n_test_batches = test_set_x.get_value(borrow=True).shape[0] / batch_size
 
+    #Data reduction
     if(transfer):
-        #Be able to reduce data here, DATA REDUCTION
-        train_set_x = train_set_x[0:int(0.4*n_train_batches*batch_size),:]
-        train_set_y = train_set_y[0:int(0.4*n_train_batches*batch_size)]
+        train_set_x = train_set_x[0:int(1.0*n_train_batches*batch_size),:]
+        train_set_y = train_set_y[0:int(1.0*n_train_batches*batch_size)]
 
 
     ######################
@@ -304,7 +305,7 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
     #problem is you can't pass weights through here, b/c of gradient descent
     #algorithms use these parameters
 
-    #MNIST only uses 10, HSF uses 36
+    #Numbers have 10 classifications, Letters have 26 classifications.
     if(transfer):
         classifier = MLP(
             rng=rng,
@@ -322,7 +323,6 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
             n_out=26
         )
 
-    # start-snippet-4
     # the cost we minimize during training is the negative log likelihood of
     # the model plus the regularization terms (L1 and L2); cost is expressed
     # here symbolically
@@ -331,7 +331,6 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
         + L1_reg * classifier.L1
         + L2_reg * classifier.L2_sqr
     )
-    # end-snippet-4
 
     # compiling a Theano function that computes the mistakes that are made
     # by the model on a minibatch
@@ -353,7 +352,6 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
         }
     )
 
-    # start-snippet-5
     # compute the gradient of cost with respect to theta (stored in params)
     # the resulting gradients will be stored in a list gparams
     gparams = [T.grad(cost, param) for param in classifier.params]
@@ -384,44 +382,17 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
     )
 
     #the size is how many in put images should be printed out and how many input images
-        #should be averaged on
+    #should be averaged on
     inputSize=100
     if(not transfer):
         #f2 = open('HSFLetters2.p','rb')
+        #f2 can be changed based on whether letters should be transferred to numbers or v.c.
         f2 = open('HSFNums.p','rb')
         datasetsTransfer = pickle.load(f2)
         train_set_x2, train_set_y2 = datasetsTransfer[0]
         inputs=train_set_x2.get_value(borrow=True) #inputs
         f2.close()
     
-    """
-    print '...printing input images'
-    if(not transfer):
-        #print out the input images
-        fileNameTemplate = 'inputImage'
-        fig = plt.figure()
-        ax = fig.add_subplot(1,1,1)
-        ax.set_aspect('equal')
-        for i in range(0, inputSize):
-            a = reshape(inputs[i,:],(28,28))
-            matrix = numpy.matrix(a)
-            plt.imshow(matrix, interpolation = 'nearest',cmap=plt.cm.Greys)
-            savefig(fileNameTemplate+`i`,format = 'png')
-    
-        #Save a picture of a weight map of the first hidden node before training
-        fig = plt.figure() #
-        ax = fig.add_subplot(1,1,1)
-        ax.set_aspect('equal')
-        fileNameTemplate = 'wMapInit'
-        for i in range(0,n_hidden):
-            a = classifier.hiddenLayer.W.get_value()[:,i]
-            a = reshape(a,(28,28))
-            matrix = numpy.matrix(a)
-            plt.imshow(matrix,interpolation='nearest',cmap=plt.cm.Greys)
-            #ocean
-            savefig(fileNameTemplate+`i`,format='png') #
-    
-    """
     ###############
     # TRAIN MODEL #
     ###############
@@ -448,8 +419,6 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
     done_looping = False
 
 
-
-
     #opening files to print validation error to
     if(not transfer):
         outFile = open('out.txt','w')
@@ -463,8 +432,6 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
     this_validation_loss = numpy.mean(validation_losses)
     outFile.write(str(this_validation_loss*100)) #printing the error out to the file, turned to string b/c still using write function
     outFile.write('\n')
-
-
 
 
     while (epoch < n_epochs) and (not done_looping):
@@ -530,39 +497,18 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
 
 
 
-
-
-
-
-
-
-
-
+    #Goal of block: Calculate hidden node activations and find which weights to transfer
+    #               Create global theano shared variable for the weights to transfer
     if(not transfer):
         
-        #Save a picture of a weight map of the first hidden node after training
-        """
-        print '...printing weight maps of H1 (hidden nodes in layer 1) after training'
-        fig = plt.figure()
-        ax = fig.add_subplot(1,1,1)
-        ax.set_aspect('equal')
-        fileNameTemplate = 'wMapTrained'
-        for i in range(0,n_hidden):
-            a = classifier.hiddenLayer.W.get_value()[:,i]
-            a = reshape(a,(28,28))
-            matrix = numpy.matrix(a)
-            plt.imshow(matrix,interpolation='nearest',cmap=plt.cm.Greys)
-            #ocean
-            savefig(fileNameTemplate+`i`,format='png')
-        """
-        
-        #Copy over weights that lead to activated nodes
+        #Set threshold to determine bounds for activated nodes - Weights leading to activated nodes with absolute values >= threshold
+        #will be copied over. Other weights are re-initialized.
         threshold = 0.0
         n_in = 28*28
-        #inputs as d are passed from the train_set_x above
+        #inputs are passed from the train_set_x above
         hidden1W = classifier.hiddenLayer.W.get_value()
         hidden1Wcopy = hidden1W
-        #just being safe for now with all the copies, can change this later
+        #Making a copy of the first hidden layer of weights to be used in calculations for second hidden lyaer of weights
         aveList = []
         #aveList represents the average hidden node activations for layer 1
         print 'starting transfer calculations'
@@ -577,20 +523,9 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
 
         count = 0
         for i in range(0,n_hidden):
-            #print 'hidden'
-            #print i
-
-            #if(T.dot(input[0,:],classifier.hiddenLayer.W.get_value()[:,i])<threshold):
-            #problem initially had [0,0] to select the value out of a possible matrix, was not
-            #a problem and in fact wouldn't work like that, so I had to remove that part
-            #Another problem was for some reason column of new matrix was treated as 784 1D
-            #unlike in the file tensorPractice.py, when I created the matrix myself, so
-            #I had to use the flatten function to flatten the array which was 784 by 1 to 784
-            #because values in aveList are added absolute values, this if statement is enough. EDIT from mlpGlob.py, also
-            #the print statements are changed
+            
             if(aveList[i] < threshold):
-                #randomize it
-                #print 'did not pass the threshold'
+                #If the activation is below the threshold, then the weights corresponding leading to that hidden node will be reinitialized
                 hidden1W[:,i] = numpy.asarray(
                                 rng.uniform(
                                     low=-numpy.sqrt(6. / (n_in + n_hidden)),
@@ -600,14 +535,10 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
                                 dtype=theano.config.floatX
                             ).flatten()
             else:
-                #print 'passed the threshold'
                 count+=1
-            #print 'with a value of'
-            #print aveList[i]
-            #print ''
         print 'A total number of ' + str(count) + ' H1 nodes passed the threshold'
         
-        #printing out count of hidden nodes
+        #saving count of hidden nodes
         outFile3 = open('transfer.txt','w')
         outFile3.write(str(count))
         outFile3.write('\n')
@@ -649,52 +580,26 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
         outFile3.close()
 
 
-
-
-
-
-
-
-
-        """
-        #print the weight maps (some will be randomized to pass on the next iteration of training, others will be preserved)
-        print '...printing H1 weight maps after transfering learning'
-        fileNameTemplate = 'wMapRelevant'
-        for i in range(0,n_hidden):
-            a = hidden1W[:,i]
-            a = reshape(a,(28,28))
-            matrix = numpy.matrix(a)
-            plt.imshow(matrix,interpolation='nearest',cmap=plt.cm.Greys)
-            #ocean
-            savefig(fileNameTemplate+`i`,format='png')
-        """
-
+        #3 global variables exist. tensor and tensor2 variables are the global theano shared variables for the weights.
+        #During the next run, the MLP will be initialized with these weights thereby transferring the weights from this run.
         global transfer
         transfer = True
         global tensor
         global tensor2
         tensor = theano.shared(value=hidden1W,name = 'W', borrow=True)
-        #tensor = theano.shared(value = classifier.hiddenLayer.W.get_value(), name = 'tensor', borrow=True)
         tensor2 = theano.shared(value = hidden2W, name = 'tensor2', borrow=True)
-        #tensor2 = None
 
-        test_mlp()
+        test_mlp() 
     else:
         print 'Thank you for running this transfer program'
         print 'Below are descriptions of files that have been created'
         print 'out.txt         - validation error while training'
-        print 'outTransfer.txt - validation error while traning after transfer learning'
-        """
-        print ''
-        print 'wMapInit group    -  weight maps after initialization'
-        print 'wMapTrained group -  weight maps after training'
-        print 'wMapTransfer group    -  weight maps after transfering'
-        print '     relevant weight maps to activated nodes are identical to wMapTrained'
-        print '     non relevant weight maps are re-initialized'
-        """
+        print 'outTransfer.txt - validation error while training after transfer learning'
+        print 'transfer.txt    - number of hidden nodes transferred in each layer'
 
 
 if __name__ == '__main__':
     global transfer
     transfer = False
+    #Transfer represents whether the network has been transferred. Initialized as false because network is newly maade here.
     test_mlp()
