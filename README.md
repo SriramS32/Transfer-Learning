@@ -33,6 +33,7 @@ For more information, see website.
 #Future Plans
 Currently, the code examines transfer between numbers and alphabets, but in the future, I hope to explore interactions between significantly different datasets as well.
 An algorithm can be developed to designate an appropriate threshold based on the transfer of learning between datasets. The learning rates of weights could be modified rather than preserving the weights and then using a general learning rate. Weights in deeper hidden layers that connect to non-activated H1 nodes could be re-initialized as well.
+Need to put in Change flags.
 
 #License
 BSD
