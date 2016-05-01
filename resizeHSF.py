@@ -2,8 +2,11 @@ import os, sys
 from PIL import Image
 
 size = 28, 28
-pathToImageFolder = "/Users/sriramsomasundaram/Desktop/CS/TransferLearning/Merged/"
-pathToDestinationFolder = "/Users/sriramsomasundaram/Desktop/CS/TransferLearning/MergedResized/"
+#CHANGE FLAG - edit file path
+#pathToImageFolder = "/Users/sriramsomasundaram/Desktop/CS/TransferLearning/Merged/"
+pathToImageFolder = "/Users/sriramsomasundaram/Desktop/FullHSF/MergedHSF0/"
+#pathToDestinationFolder = "/Users/sriramsomasundaram/Desktop/CS/TransferLearning/MergedResized/"
+pathToDestinationFolder = "/Users/sriramsomasundaram/Desktop/HSFresized/"
 
 files_in_dir = os.listdir(pathToImageFolder)
 for file_in_dir in files_in_dir:

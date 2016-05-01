@@ -259,7 +259,7 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
    #a transfer in the if statement will run the code for the Letters data set first and Numbers data set second.
    #(Not transfer) will run the code for the Numbers data set first and Letters data set second. 
 
-   #CHANGE FLAG
+   #CHANGE FLAG - edit order datasets are run in and dataset name
     if(transfer):
         #datasets = load_data(dataset)
         f = open('HSFNums.p','rb')
@@ -309,7 +309,7 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
 
     #Numbers have 10 classifications, Letters have 26 classifications.
     #transfer is initialized as false, so depending on which dataset should be run first, edit this
-    #CHANGE FLAG
+    #CHANGE FLAG - edit the order the network trains in and the number of outputs (n_out)
     if(transfer):
         classifier = MLP(
             rng=rng,
@@ -385,7 +385,7 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
         }
     )
 
-    #CHANGE FLAG
+    #CHANGE FLAG - edit based on the order the network rusn in and the input file name
     inputSize=100 #number of input images sampled from next dataset for transfer calculations
     if(not transfer):
         #f2 = open('HSFLetters2.p','rb')

@@ -7,6 +7,8 @@ import cPickle
 
 #Converting a-z & A-Z -> 0-25
 #Converting any integer to its corresponding int64 value.
+#convert function is for synthesizing labels to the data
+#CHANGE FLAG - edit labeling function
 def convert(str):
     val = ord(str.lower())
     if(val>= 97 and val<= 122):
@@ -28,12 +30,13 @@ Theano to use GPU memory. Finally, the datasets are concatenated together and pi
 def getHSF():
     train_dataset, dev_dataset, test_dataset = (), (), ()
     names = ()
-    parseNames = [] 
+    parseNames = []
     bigt = []
 
     #pathToImageFolder = "/Users/sriramsomasundaram/Desktop/CS/TransferLearning/MergedResized/"
     #pathToImageFolder = "/Users/sriramsomasundaram/Desktop/HSFresized/"
     #make sure you have a / at the end of the file name
+    #CHANGE FLAG - edit file path
     pathToImageFolder = "/home/rcf-proj/sn/sriramso/HSFresizedtest/"
     files_in_dir = os.listdir(pathToImageFolder)
     bigt = numpy.zeros((0,784),dtype='float32')
@@ -111,6 +114,7 @@ def getHSF():
     rval = [(train_set_x, train_set_y), (valid_set_x, valid_set_y),
             (test_set_x, test_set_y)]
     #return rval
+    #CHANGE FLAG - edit output file
     cPickle.dump(rval,open('HSFLetters2.p','wb'))
 
 
