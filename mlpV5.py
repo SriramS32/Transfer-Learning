@@ -257,7 +257,9 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
    #Note - transfer is used to check whether test_mlp is running for the first time with new weights or second time with transferred weights
    #Transfer is initialized to be false.
    #a transfer in the if statement will run the code for the Letters data set first and Numbers data set second.
-   #(Not transfer) will run the code for the Numbers data set first and Letters data set second.
+   #(Not transfer) will run the code for the Numbers data set first and Letters data set second. 
+
+   #CHANGE FLAG
     if(transfer):
         #datasets = load_data(dataset)
         f = open('HSFNums.p','rb')
@@ -306,6 +308,8 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
     #algorithms use these parameters
 
     #Numbers have 10 classifications, Letters have 26 classifications.
+    #transfer is initialized as false, so depending on which dataset should be run first, edit this
+    #CHANGE FLAG
     if(transfer):
         classifier = MLP(
             rng=rng,
@@ -381,9 +385,8 @@ def test_mlp(learning_rate=.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=150,
         }
     )
 
-    #the size is how many in put images should be printed out and how many input images
-    #should be averaged on
-    inputSize=100
+    #CHANGE FLAG
+    inputSize=100 #number of input images sampled from next dataset for transfer calculations
     if(not transfer):
         #f2 = open('HSFLetters2.p','rb')
         #f2 can be changed based on whether letters should be transferred to numbers or v.c.
