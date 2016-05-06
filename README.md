@@ -2,7 +2,7 @@
 
 Hi!
 
-**Background:** I just started this project two months ago. Based on hearing Deepmind's Demis Hassabis talk about the ability to transfer learning, I wanted to create infrastructure for a network to transfer learning between tasks. Biologically, I thought that transfer learning involves the activation of similar neurons and pathways (or hidden nodes, computationally speaking).
+**Background:** I just started this project a couple of months ago. Based on hearing Deepmind's Demis Hassabis talk about the ability to transfer learning, I wanted to create infrastructure for a network to transfer learning between tasks. Biologically, I thought that transfer learning involves the activation of similar neurons and pathways (or hidden nodes, computationally speaking).
 
 **Repository** contains
 - mlpV5.py is main MLP code with transfer learning
@@ -10,6 +10,7 @@ Hi!
 - logistic_sgd.py for use by main MLP code & connects last hidden layer to output layer
 - getHSF.py processes and pickles image files in grayscale
 - resizeHSF.py crops images and resizes to 28*28
+- resizeHSF1.py resizes to 28*28 while maintaining aspect ratio
 
 Libraries needed: **Theano**, for DBN also need **rbm.py** and **utils.py** from Theano deep learning tutorial
 
