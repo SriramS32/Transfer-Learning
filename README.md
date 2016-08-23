@@ -1,7 +1,6 @@
 # Transfer-Learning
 
 Hi!
-
 **Background:** I just started this project a couple of months ago. Based on hearing Deepmind's Demis Hassabis talk about the ability to transfer learning, I wanted to create infrastructure for a network to transfer learning between tasks. Biologically, I thought that transfer learning involves the activation of similar neurons and pathways (or hidden nodes, computationally speaking).
 
 **Repository** contains
